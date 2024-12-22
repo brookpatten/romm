@@ -13,6 +13,7 @@ const props = defineProps<{
   state: StateSchema | null;
   bios: FirmwareSchema | null;
   core: string | null;
+  useThreads: boolean;
 }>();
 const romRef = ref<DetailedRom>(props.rom);
 const saveRef = ref<SaveSchema | null>(props.save);
@@ -96,6 +97,7 @@ window.EJS_gameUrl = `/api/roms/${romRef.value.id}/content/${romRef.value.file_n
 window.EJS_biosUrl = props.bios
   ? `/api/firmware/${props.bios.id}/content/${props.bios.file_name}`
   : "";
+window.EJS_threads = props.useThreads;
 window.EJS_player = "#game";
 window.EJS_pathtodata = "/assets/emulatorjs/";
 window.EJS_color = "#A453FF";

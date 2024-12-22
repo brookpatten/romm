@@ -26,6 +26,7 @@ const stateRef = ref<StateSchema | null>(null);
 const coreRef = ref<string | null>(null);
 const supportedCores = ref<string[]>([]);
 const gameRunning = ref(false);
+const useTreads = ref(false);
 const storedFSOP = localStorage.getItem("fullScreenOnPlay");
 const fullScreenOnPlay = ref(isNull(storedFSOP) ? true : storedFSOP === "true");
 const script = document.createElement("script");
@@ -42,6 +43,15 @@ function onPlay() {
 function onFullScreenChange() {
   fullScreenOnPlay.value = !fullScreenOnPlay.value;
   localStorage.setItem("fullScreenOnPlay", fullScreenOnPlay.value.toString());
+}
+
+function onUseThreadsChange() {
+  useTreads.value = !useTreads.value;
+  if (!rom.value) return;
+  localStorage.setItem(
+    `player:${rom.value.platform_slug}:threads`,
+    useTreads.value.toString(),
+  );
 }
 
 onMounted(async () => {
@@ -96,6 +106,16 @@ onMounted(async () => {
     // Otherwise auto select first supported core
     coreRef.value = supportedCores.value[0];
   }
+
+  const storedThreads = localStorage.getItem(
+    `player:${rom.value.platform_slug}:threads`,
+  );
+  if (storedThreads) {
+    useTreads.value = storedThreads === "true";
+  } else {
+    // Threads are required for PSP
+    useTreads.value = rom.value.platform_slug === "psp";
+  }
 });
 </script>
 
@@ -117,6 +137,7 @@ onMounted(async () => {
         :save="saveRef"
         :bios="biosRef"
         :core="coreRef"
+        :useThreads="useTreads"
       />
     </v-col>
 
@@ -309,10 +330,27 @@ onMounted(async () => {
                 >{{ t("play.full-screen") }}</v-btn
               >
             </v-col>
+            <v-col>
+              <v-btn
+                block
+                size="large"
+                rounded="0"
+                @click="onUseThreadsChange"
+                :disabled="gameRunning || rom?.platform_slug === 'psp'"
+                :variant="useTreads ? 'flat' : 'outlined'"
+                :color="useTreads ? 'romm-accent-1' : ''"
+                ><v-icon class="mr-1">{{
+                  useTreads
+                    ? "mdi-checkbox-outline"
+                    : "mdi-checkbox-blank-outline"
+                }}</v-icon
+                >{{ t("play.use-threads") }}</v-btn
+              >
+            </v-col>
             <v-col
               cols="12"
-              :sm="gameRunning ? 12 : 7"
-              :xl="gameRunning ? 12 : 9"
+              :sm="gameRunning ? 12 : 5"
+              :xl="gameRunning ? 12 : 7"
             >
               <v-btn
                 color="romm-accent-1"
