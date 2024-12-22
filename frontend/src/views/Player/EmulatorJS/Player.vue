@@ -77,6 +77,7 @@ declare global {
     EJS_alignStartButton: "top" | "center" | "bottom";
     EJS_startOnLoaded: boolean;
     EJS_fullscreenOnLoaded: boolean;
+    EJS_threads: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     EJS_emulator: any;
     EJS_onGameStart: () => void;
