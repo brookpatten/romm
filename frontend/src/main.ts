@@ -35,6 +35,16 @@ async function initializeData() {
   }
 }
 
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('/src/sw.js', { scope: '/' })
+//     .then(registration => {
+//       console.log('SW registered:', registration);
+//     })
+//     .catch(err => {
+//       console.error('SW registration failed:', err);
+//     });
+// }
+
 async function initializeApp() {
   const app = createApp(App);
 
